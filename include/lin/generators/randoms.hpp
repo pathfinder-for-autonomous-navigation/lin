@@ -41,7 +41,7 @@ class RandomsGenerator {
    */
   constexpr RandomsGenerator(unsigned long long seed = 0) : seed(seed ^ 4101842887655102017LL) { }
 
-  /** @brief Generates a random number in the range zero to one.
+  /** @brief Generates a uniform random number in the range zero to one.
    * 
    *  @return Random number between zero and one.
    */
@@ -66,7 +66,7 @@ class RandomsGenerator {
 };
 }  // namespace internal
 
-/** @brief Generates a Matrix or Vector populated with random values between 0 and 1
+/** @brief Generates a Matrix or Vector populated with uniform random values between 0 and 1
  *
  *  @tparam C Tensor type whose traits the returned stream will mimic.
  *
