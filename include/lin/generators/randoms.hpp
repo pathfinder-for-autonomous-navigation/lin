@@ -29,6 +29,18 @@ class RandomsGenerator {
    */
   unsigned long long seed;
 
+  /**
+   * @brief Value of a cached standard normal gassauisan random.
+   * 
+   */
+  double cached_rand;
+
+  /**
+   * @brief has_cached is true if there's a cached standard normal available.
+   * 
+   */
+  bool has_cached;
+
  public:
   constexpr RandomsGenerator(RandomsGenerator const &) = default;
   constexpr RandomsGenerator(RandomsGenerator &&) = default;
@@ -39,13 +51,16 @@ class RandomsGenerator {
    *
    *  @param[in] seed
    */
-  constexpr RandomsGenerator(unsigned long long seed = 0) : seed(seed ^ 4101842887655102017LL) { }
+  constexpr RandomsGenerator(unsigned long long seed = 0) : 
+    seed(seed ^ 4101842887655102017LL), 
+    has_cached(false),
+    cached_rand(0.0) { }
 
   /** @brief Generates a uniform random number in the range zero to one.
    * 
    *  @return Random number between zero and one.
    */
-  constexpr double next() {
+  constexpr double rand() {
     seed ^= (seed >> 21);
     seed ^= (seed << 35);
     seed ^= (seed >> 4);
@@ -54,14 +69,23 @@ class RandomsGenerator {
   }
 
   /**
-   * @brief Return a gaussian random number with mean 0 and std 1. Uses Box–Muller transform.
+   * @brief Return a gaussian random number with mean 0 and std 1.
+   * Uses Box-Mueller transform with caching.
    * 
    * @return constexpr double 
    */
   constexpr double gaussian() {
-    double R = sqrt(-2.0L*log(next()));
-    double T = 2.0L*M_PI*next();
-    return R*cos(T);
+    if(has_cached) {
+      has_cached = false;
+      return cached_rand;
+    }
+    else{
+      double R = std::sqrt(-2.0L*std::log(rand()));
+      double T = 2.0L*M_PI*rand();
+      cached_rand = R*std::sin(T);
+      has_cached = true;
+      return R*std::cos(T);
+    }
   }
 };
 }  // namespace internal
@@ -83,7 +107,7 @@ class RandomsGenerator {
 template <class C, std::enable_if_t<internal::has_traits<C>::value, size_t> = 0>
 constexpr auto rands(internal::RandomsGenerator &rand, size_t r = C::Traits::max_rows, size_t c = C::Traits::max_cols) {
   typename C::Traits::eval_t t(r, c);
-  for (lin::size_t i = 0; i < t.size(); i++) t(i) = typename C::Traits::elem_t(rand.next());
+  for (lin::size_t i = 0; i < t.size(); i++) t(i) = typename C::Traits::elem_t(rand.rand());
   return t;
 }
 
@@ -103,17 +127,9 @@ constexpr auto rands(internal::RandomsGenerator &rand, size_t r = C::Traits::max
  *  @ingroup GENERATORS
  */
 template <class C, std::enable_if_t<internal::has_traits<C>::value, size_t> = 0>
-constexpr auto gaussian_rands(internal::RandomsGenerator &rand, size_t r = C::Traits::max_rows, size_t c = C::Traits::max_cols) {
+constexpr auto gaussians(internal::RandomsGenerator &rand, size_t r = C::Traits::max_rows, size_t c = C::Traits::max_cols) {
   typename C::Traits::eval_t t(r, c);
-  for (lin::size_t i = 0; i < t.size()-1; i+=2) {
-    double R = sqrt(-2.0L*log(rand.next()));
-    double T = 2.0L*M_PI*rand.next();
-    t(i) = typename C::Traits::elem_t(R*cos(T));
-    t(i+1) = typename C::Traits::elem_t(R*sin(T));
-  }
-  if(t.size()%2 == 1){
-    t(t.size() - 1) = typename C::Traits::elem_t(rand.gaussian());
-  }
+  for (lin::size_t i = 0; i < t.size(); i++) t(i) = typename C::Traits::elem_t(rand.gaussian());
   return t;
 }
 }  // namespace lin

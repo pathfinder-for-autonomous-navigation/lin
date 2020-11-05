@@ -12,7 +12,7 @@
 TEST(GeneratorsRandoms, RandomsGenerator) {
   lin::internal::RandomsGenerator rand;
   for (lin::size_t i = 0; i < 10000; i++) {
-    double x = rand.next();
+    double x = rand.rand();
     ASSERT_LE(x, 1.0);
     ASSERT_GT(x, 0.0);
   }
@@ -28,7 +28,7 @@ TEST(GeneratorsRandoms, GaussianRandomsGenerator) {
     mean += x;
     std += x*x;
   }
-  std = sqrt(std/N);
+  std = std::sqrt(std/N);
   mean = mean/N;
 
   ASSERT_LE(mean,0.01);
@@ -49,7 +49,7 @@ TEST(GeneratorsRandoms, Rands) {
 
 TEST(GeneratorRandoms, GaussianRandsShape){
   lin::internal::RandomsGenerator rand;
-  auto const A = lin::gaussian_rands<lin::Matrixd<0, 3, 5, 3>>(rand, 4, 3);
+  auto const A = lin::gaussians<lin::Matrixd<0, 3, 5, 3>>(rand, 4, 3);
   static_assert(std::is_same<std::remove_cv_t<decltype(A)>, lin::Matrixd<0, 3, 5, 3>>::value, "");
   ASSERT_EQ( 4, A.rows());
   ASSERT_EQ( 3, A.cols());
@@ -63,7 +63,7 @@ TEST(GeneratorsRandoms, GaussianRands){
   uint L = 100000;
   uint N = L*15;
   for(uint j = 0; j<L;j++){
-    auto const A = lin::gaussian_rands<lin::Matrixd<3,5>>(rand, 3, 5);
+    auto const A = lin::gaussians<lin::Matrixd<3,5>>(rand, 3, 5);
     // std::cout << A;
     for(lin::size_t i = 0; i < A.size(); i++){
       mean += A(i);
@@ -71,7 +71,7 @@ TEST(GeneratorsRandoms, GaussianRands){
     }
   }
 
-  std = sqrt(std/N);
+  std = std::sqrt(std/N);
   mean = mean/N;
 
   ASSERT_LE(mean,0.01);
