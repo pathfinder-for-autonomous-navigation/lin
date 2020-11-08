@@ -80,8 +80,8 @@ class RandomsGenerator {
       return cached_rand;
     }
     else{
-      double R = std::sqrt(-2.0L*std::log(rand()));
-      double T = 2.0L*M_PI*rand();
+      double R = std::sqrt(-2.0*std::log(rand()));
+      double T = 2.0*M_PI*rand();
       cached_rand = R*std::sin(T);
       has_cached = true;
       return R*std::cos(T);
