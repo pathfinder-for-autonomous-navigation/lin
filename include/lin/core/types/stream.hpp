@@ -141,7 +141,7 @@ class Stream {
    */
   inline constexpr typename Traits::elem_t operator[](size_t i) const {
     return derived()(i);
-	}
+  }
 
   /** @brief Forces evaluation of this stream to a value backed type.
    * 
