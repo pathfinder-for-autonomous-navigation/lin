@@ -1,6 +1,6 @@
 // vim: set tabstop=2:softtabstop=2:shiftwidth=2:expandtab
 
-/** @file lin/views/tensor_view.hpp
+/** @file lin/views/const_tensor_view.hpp
  *  @author Kyle Krol
  */
 
