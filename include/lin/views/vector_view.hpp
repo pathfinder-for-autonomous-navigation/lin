@@ -15,7 +15,7 @@ namespace internal {
 
 /** @brief Generic vector view.
  * 
- *  @tparam T  Vector view element type.
+ *  @tparam T  %Vector view element type.
  *  @tparam N  Number of elements at compile time (i.e. number of rows).
  *  @tparam MN Maximum number of elements (i.e. maximum number of rows).
  * 

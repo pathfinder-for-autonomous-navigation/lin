@@ -21,9 +21,9 @@ namespace internal {
  *  size and elements are read and written to the buffer in row major order.
  *
  *  @sa internal::ConstBase
- *  @sa ConstMatrixView
- *  @sa ConstRowVectorView
- *  @sa ConstVectorView
+ *  @sa internal::ConstMatrixView
+ *  @sa internal::ConstRowVectorView
+ *  @sa internal::ConstVectorView
  * 
  *  @ingroup VIEWS
  */
@@ -60,7 +60,7 @@ class ConstTensorView : public ConstBase<D> {
   constexpr ConstTensorView<D> &operator=(ConstTensorView<D> &&) = default;
 
   /** @brief Constructs a new constant tensor tensor view with the provided
-   *         backin array.
+   *         backing array.
    * 
    *  @param elems Constant element backing array.
    * 

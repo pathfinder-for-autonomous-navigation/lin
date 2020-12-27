@@ -17,163 +17,201 @@
 #include <type_traits>
 
 namespace lin {
+namespace internal {
 
-/** @brief Creates a tensor view with traits based on the provided type.
+/** @brief Provides a specific tensor type's corresponding view type.
  *
- *  @tparam C Tensor types the view's traits are taken from.
+ *  @tparam C %Tensor type.
  *
- *  @param elems Constant element backing array.
- *  @param r     Initial row count.
- *  @param c     Initial column count.
- *
- *  @returns Constant matrix view.
- *
- *  This overload is chosen if the backing array contains constant elements and
- *  the traits provided describe a matrix.
- *
- *  Lin assertions errors will be triggered if the requested dimensions aren't
- *  possible given the tensor's traits.
- *
- *  @sa internal::traits
- *  @sa internal::is_matrix
+ *  @sa internal::const_view
  *
  *  @ingroup VIEWS
  */
-template <class C, std::enable_if_t<internal::conjunction<
-    internal::has_traits<C>, internal::is_matrix<C>>::value, size_t> = 0>
-constexpr auto view(typename C::Traits::elem_t const *elems, size_t r = C::Traits::max_rows, size_t c = C::Traits::max_cols) {
-  return internal::ConstMatrixView<typename C::Traits::elem_t, C::Traits::rows, C::Traits::cols, C::Traits::max_rows, C::Traits::max_cols>(elems, r, c);
-}
+template <class C, typename = void>
+struct view { };
 
-/** @brief Creates a tensor view with traits based on the provided type.
+template <class C>
+using view_t = typename view<C>::type;
+
+template <class C>
+struct view<C, std::enable_if_t<is_matrix<C>::value>> {
+  typedef MatrixView<typename C::Traits::elem_t, C::Traits::rows, C::Traits::cols, C::Traits::max_rows, C::Traits::max_cols> type;
+};
+
+template <class C>
+struct view<C, std::enable_if_t<is_col_vector<C>::value>> {
+  typedef VectorView<typename C::VectorTraits::elem_t, C::VectorTraits::length, C::VectorTraits::max_length> type;
+};
+
+template <class C>
+struct view<C, std::enable_if_t<is_row_vector<C>::value>> {
+  typedef RowVectorView<typename C::VectorTraits::elem_t, C::VectorTraits::length, C::VectorTraits::max_length> type;
+};
+
+/** @brief Provides a specific tensor type's corresponding constant view type.
  *
- *  @tparam C Tensor types the view's traits are taken from.
+ *  @tparam C %Tensor type.
  *
- *  @param elems Constant element backing array.
- *  @param n     Initial length.
- *
- *  @returns Constant vector view.
- *
- *  This overload is chosen if the backing array contains constant elements and
- *  the traits provided describe a column vector.
- *
- *  Lin assertions errors will be triggered if the requested dimensions aren't
- *  possible given the tensor's traits.
- *
- *  @sa internal::traits
- *  @sa internal::is_col_vector
+ *  @sa internal::view
  *
  *  @ingroup VIEWS
  */
-template <class C, std::enable_if_t<internal::conjunction<
-    internal::has_traits<C>, internal::is_col_vector<C>>::value, size_t> = 0>
-constexpr auto view(typename C::Traits::elem_t const *elems, size_t n = C::VectorTraits::max_length) {
-  return internal::ConstVectorView<typename C::VectorTraits::elem_t, C::VectorTraits::length, C::VectorTraits::max_length>(elems, n);
-}
+template <class C, typename = void>
+struct const_view { };
 
-/** @brief Creates a tensor view with traits based on the provided type.
- *
- *  @tparam C Tensor types the view's traits are taken from.
- *
- *  @param elems Constant element backing array.
- *  @param n     Initial length.
- *
- *  @returns Constant row vector view.
- *
- *  This overload is chosen if the backing array contains constant elements and
- *  the traits provided describe a row vector.
- *
- *  Lin assertions errors will be triggered if the requested dimensions aren't
- *  possible given the tensor's traits.
- *
- *  @sa internal::traits
- *  @sa internal::is_row_vector
- *
- *  @ingroup VIEWS
- */
-template <class C, std::enable_if_t<internal::conjunction<
-    internal::has_traits<C>, internal::is_row_vector<C>>::value, size_t> = 0>
-constexpr auto view(typename C::Traits::elem_t const *elems, size_t n = C::VectorTraits::max_length) {
-  return internal::ConstRowVectorView<typename C::VectorTraits::elem_t, C::VectorTraits::length, C::VectorTraits::max_length>(elems, n);
-}
+template <class C>
+using const_view_t = typename const_view<C>::type;
 
-/** @brief Creates a tensor view with traits based on the provided type.
+template <class C>
+struct const_view<C, std::enable_if_t<is_matrix<C>::value>> {
+  typedef ConstMatrixView<typename C::Traits::elem_t, C::Traits::rows, C::Traits::cols, C::Traits::max_rows, C::Traits::max_cols> type;
+};
+
+template <class C>
+struct const_view<C, std::enable_if_t<is_col_vector<C>::value>> {
+  typedef ConstVectorView<typename C::VectorTraits::elem_t, C::VectorTraits::length, C::VectorTraits::max_length> type;
+};
+
+template <class C>
+struct const_view<C, std::enable_if_t<is_row_vector<C>::value>> {
+  typedef ConstRowVectorView<typename C::VectorTraits::elem_t, C::VectorTraits::length, C::VectorTraits::max_length> type;
+};
+}  // namespace internal
+
+/** @brief Creates a tensor view with default dimensions.
  *
- *  @tparam C Tensor types the view's traits are taken from.
+ *  @tparam C %Tensor type whose traits are replicated.
  *
  *  @param elems Element backing array.
- *  @param r     Initial row count.
- *  @param c     Initial column count.
  *
- *  @returns Matrix view.
+ *  @return internal::MatrixView, internal::RowVectorView, or
+ *          internal::VectorView.
  *
- *  This overload is chosen if the backing array contains writable elements and
- *  the traits provided describe a matrix.
- *
- *  Lin assertions errors will be triggered if the requested dimensions aren't
- *  possible given the tensor's traits.
+ *  If the view's traits support variable dimensions, the view is constructed
+ *  with the largest allowable dimensions (i.e. default dimensions).
  *
  *  @sa internal::traits
- *  @sa internal::is_matrix
+ *  @sa internal::view
  *
  *  @ingroup VIEWS
  */
-template <class C, std::enable_if_t<internal::conjunction<
-    internal::has_traits<C>, internal::is_matrix<C>>::value, size_t> = 0>
-constexpr auto view(typename C::Traits::elem_t *elems, size_t r = C::Traits::max_rows, size_t c = C::Traits::max_cols) {
-  return internal::MatrixView<typename C::Traits::elem_t, C::Traits::rows, C::Traits::cols, C::Traits::max_rows, C::Traits::max_cols>(elems, r, c);
+template <class C, typename = std::enable_if_t<internal::has_traits<C>::value>>
+constexpr auto view(typename C::Traits::elem_t *elems) {
+  return internal::view_t<C>(elems);
 }
 
-/** @brief Creates a tensor view with traits based on the provided type.
+/** @brief Creates a vector view with the provided length.
  *
- *  @tparam C Tensor types the view's traits are taken from.
+ *  @tparam C %Vector type whose traits are replicated.
  *
  *  @param elems Element backing array.
- *  @param n     Initial length.
  *
- *  @returns Vector view.
+ *  @return internal::RowVectorView or internal::VectorView.
  *
- *  This overload is chosen if the backing array contains writable elements and
- *  the traits provided describe a column vector.
- *
- *  Lin assertions errors will be triggered if the requested dimensions aren't
- *  possible given the tensor's traits.
+ *  Lin assertion errors will be triggered if the requested length isn't
+ *  possible given the vector view's traits.
  *
  *  @sa internal::traits
- *  @sa internal::is_col_vector
+ *  @sa internal::view
  *
  *  @ingroup VIEWS
  */
-template <class C, std::enable_if_t<internal::conjunction<
-    internal::has_traits<C>, internal::is_col_vector<C>>::value, size_t> = 0>
-constexpr auto view(typename C::Traits::elem_t *elems, size_t n = C::VectorTraits::max_length) {
-  return internal::VectorView<typename C::VectorTraits::elem_t, C::VectorTraits::length, C::VectorTraits::max_length>(elems, n);
+template <class C, typename = std::enable_if_t<internal::conjunction<
+    internal::has_traits<C>, internal::is_vector<C>>::value>>
+constexpr auto view(typename C::Traits::elem_t *elems, size_t n) {
+  return internal::view_t<C>(elems, n);
 }
 
-/** @brief Creates a tensor view with traits based on the provided type.
+/** @brief Creates a tensor view with the provided dimensions.
  *
- *  @tparam C Tensor types the view's traits are taken from.
+ *  @tparam C %Tensor type whose traits are replicated.
  *
  *  @param elems Element backing array.
- *  @param n     Initial length.
+ *  @param r     Initial row dimension.
+ *  @param c     Initial column dimension.
  *
- *  @returns Row vector view.
- *
- *  This overload is chosen if the backing array contains writable elements and
- *  the traits provided describe a row vector.
+ *  @return internal::MatrixView, internal::RowVectorView, or
+ *          internal::VectorView.
  *
  *  Lin assertions errors will be triggered if the requested dimensions aren't
- *  possible given the tensor's traits.
+ *  possible given the view's traits.
  *
  *  @sa internal::traits
- *  @sa internal::is_row_vector
+ *  @sa internal::view
  *
  *  @ingroup VIEWS
  */
-template <class C, std::enable_if_t<internal::conjunction<
-    internal::has_traits<C>, internal::is_row_vector<C>>::value, size_t> = 0>
-constexpr auto view(typename C::Traits::elem_t *elems, size_t n = C::VectorTraits::max_length) {
-  return internal::RowVectorView<typename C::VectorTraits::elem_t, C::VectorTraits::length, C::VectorTraits::max_length>(elems, n);
+template <class C, typename = std::enable_if_t<internal::has_traits<C>::value>>
+constexpr auto view(typename C::Traits::elem_t *elems, size_t r, size_t c) {
+  return internal::view_t<C>(elems, r, c);
+}
+
+/** @brief Creates a constant tensor view with default dimensions.
+ *
+ *  @tparam C %Tensor type whose traits are replicated.
+ *
+ *  @param elems Constant element backing array.
+ *
+ *  @return internal::ConstMatrixView, internal::ConstRowVectorView, or
+ *          internal::ConstVectorView.
+ *
+ *  If the view's traits support variable dimensions, the view is constructed
+ *  with the largest allowable dimensions (i.e. default dimensions).
+ *
+ *  @sa internal::traits
+ *  @sa internal::const_view
+ *
+ *  @ingroup VIEWS
+ */
+template <class C, typename = std::enable_if_t<internal::has_traits<C>::value>>
+constexpr auto view(typename C::Traits::elem_t const *elems) {
+  return internal::const_view_t<C>(elems);
+}
+
+/** @brief Creates a constant vector view with the provided length.
+ *
+ *  @tparam C %Vector type whose traits are replicated.
+ *
+ *  @param elems Constant element backing array.
+ *
+ *  @return internal::ConstRowVectorView or internal::ConstVectorView.
+ *
+ *  Lin assertion errors will be triggered if the requested length isn't
+ *  possible given the vector view's traits.
+ *
+ *  @sa internal::traits
+ *  @sa internal::const_view
+ *
+ *  @ingroup VIEWS
+ */
+template <class C, typename = std::enable_if_t<internal::conjunction<
+    internal::has_traits<C>, internal::is_vector<C>>::value>>
+constexpr auto view(typename C::Traits::elem_t const *elems, size_t n) {
+  return internal::const_view_t<C>(elems, n);
+}
+
+/** @brief Creates a constant tensor view with the provided dimensions.
+ *
+ *  @tparam C %Tensor type whose traits are replicated.
+ *
+ *  @param elems Constant element backing array.
+ *  @param r     Initial row dimension.
+ *  @param c     Initial column dimension.
+ *
+ *  @return internal::ConstMatrixView, internal::ConstRowVectorView, or
+ *          internal::ConstVectorView.
+ *
+ *  Lin assertions errors will be triggered if the requested dimensions aren't
+ *  possible given the view's traits.
+ *
+ *  @sa internal::traits
+ *  @sa internal::const_view
+ *
+ *  @ingroup VIEWS
+ */
+template <class C, typename = std::enable_if_t<internal::has_traits<C>::value>>
+constexpr auto view(typename C::Traits::elem_t const *elems, size_t r, size_t c) {
+  return internal::const_view_t<C>(elems, r, c);
 }
 }  // namespace lin
 

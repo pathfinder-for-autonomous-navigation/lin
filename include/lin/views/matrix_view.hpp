@@ -15,7 +15,7 @@ namespace internal {
 
 /** @brief Generic matrix view.
  * 
- *  @tparam T  Matrix view element type.
+ *  @tparam T  %Matrix view element type.
  *  @tparam R  Rows at compile time.
  *  @tparam C  Columns at compile time.
  *  @tparam MR Maximum rows at compile time.
@@ -26,6 +26,7 @@ namespace internal {
  * 
  *  @sa internal::traits
  *  @sa internal::is_matrix
+ *  @sa internal::TensorView
  * 
  *  @ingroup VIEWS
  */

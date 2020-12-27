@@ -21,9 +21,9 @@ namespace internal {
  *  size and elements are read and written to the buffer in row major order.
  *
  *  @sa internal::Base
- *  @sa MatrixView
- *  @sa RowVectorView
- *  @sa VectorView
+ *  @sa internal::MatrixView
+ *  @sa internal::RowVectorView
+ *  @sa internal::VectorView
  * 
  *  @ingroup VIEWS
  */
