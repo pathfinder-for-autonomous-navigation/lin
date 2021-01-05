@@ -41,7 +41,7 @@
  *  }
  *  ~~~
  *
- *  It's important to note that their are actually two types of views that can
+ *  It's important to note that there are actually two types of views that can
  *  be returned by lin::view. The first is a standard view which allows read and
  *  write access to the underlying elements (this is seen in the example above).
  *  The second is known as a constant view and only allows read access to the
