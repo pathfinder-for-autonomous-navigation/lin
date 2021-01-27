@@ -18,8 +18,8 @@ namespace internal {
  *  @tparam E Underlying referenced type.
  *
  *  This allows users to interpret a portion of a larger internal::Mapping as an
- *  independant tensor type with user specified traits. A common use may be to
- *  treat block diagonal elements of a larger matrix independantly or perform
+ *  independent tensor type with user specified traits. A common use may be to
+ *  treat block diagonal elements of a larger matrix independently or perform
  *  vector operations on the columns of a matrix.
  *
  *  It's important to note, if the underlying mapping goes out of scope the
@@ -81,6 +81,9 @@ class TensorMappingReference : public Mapping<D>, public Dimensions<D> {
    *  mapping given the anchor point. If this is not the case, lin assertion
    *  errors will be triggered.
    *
+   *  The anchor points specifies where the top left corner of the reference
+   *  maps to in the underlying mapping.
+   *
    *  @sa internal::traits
    */
   constexpr TensorMappingReference(Mapping<E> &mapping, size_t i, size_t j)
@@ -106,6 +109,9 @@ class TensorMappingReference : public Mapping<D>, public Dimensions<D> {
    *  The reference traits must define a type that fits within the provided
    *  mapping given the anchor point. If this is not the case, lin assertion
    *  errors will be triggered.
+   *
+   *  The anchor points specifies where the top left corner of the reference
+   *  maps to in the underlying mapping.
    *
    *  Lin assertions errors will be triggered if the requested dimensions aren't
    *  possible given the reference's traits.

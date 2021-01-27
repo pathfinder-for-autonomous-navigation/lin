@@ -83,6 +83,9 @@ class VectorStreamReference : public TensorStreamReference<VectorStreamReference
    *  provided mapping given the anchor point. If this is not the case, lin
    *  assertion errors will be triggered.
    *
+   *  The anchor points specifies where the top left corner of the reference
+   *  maps to in the underlying stream.
+   *
    *  Lin assertions errors will be triggered if the requested length isn't
    *  possible given the reference's traits.
    *
@@ -174,6 +177,9 @@ class RowVectorStreamReference : public TensorStreamReference<RowVectorStreamRef
    *  The reference row vector's traits must define a type that fits within the
    *  provided mapping given the anchor point. If this is not the case, lin
    *  assertion errors will be triggered.
+   *
+   *  The anchor points specifies where the top left corner of the reference
+   *  maps to in the underlying stream.
    *
    *  Lin assertions errors will be triggered if the requested length isn't
    *  possible given the reference's traits.

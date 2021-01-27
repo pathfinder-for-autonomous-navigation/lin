@@ -66,7 +66,7 @@
  *   - The reference itself is invalid when the backing object (in this case
  *     `M`) goes out of scope.
  *   - This particular reference serves as a read and write interface. However,
- *     read only references can also be generated in the same fashion is the
+ *     read only references can also be generated in the same fashion if the
  *     underlying type is `const` or read only.
  *
  *  Lastly, there are also convenience functions `lin::ref_col` and
@@ -79,7 +79,8 @@
  *  #include <lin/core.hpp>
  *  #include <lin/references.hpp>
  *
- *  template <class D>
+ *  template <class D, typename = std::enable_if_t<lin::internal::disjunction<
+ *      lin::internal::is_matrix<D>, lin::internal::is_col_vector<D>>::value>>
  *  void normalize(lin::internal::Mapping<D> &M) {
  *    for (lin::size_t j = 0; j < M.cols(); j++) {
  *      auto m = lin::ref_col(M, j);
@@ -192,6 +193,9 @@ struct stream_reference<C, D, std::enable_if_t<conjunction<
  *  This serves essentially as a wrapper around the reference constructors
  *  using default dimensions.
  *
+ *  The anchor points specifies where the top left corner of the reference maps
+ *  to in the underlying mapping.
+ *
  *  @ingroup REFERENCES
  */
 template <class C, class D, typename =
@@ -214,6 +218,9 @@ constexpr auto ref(internal::Mapping<D> &mapping, size_t i, size_t j) {
  *
  *  This serves essentially as a wrapper around the vector reference
  *  constructors requesting a length.
+ *
+ *  The anchor points specifies where the top left corner of the reference maps
+ *  to in the underlying mapping.
  *
  *  Lin assertions errors will be triggered if the requested dimensions aren't
  *  possible given the reference's traits.
@@ -245,6 +252,9 @@ constexpr auto ref(internal::Mapping<D> &mapping, size_t i, size_t j, size_t n) 
  *
  *  This serves essentially as a wrapper around the reference constructors
  *  using default dimensions.
+ *
+ *  The anchor points specifies where the top left corner of the reference maps
+ *  to in the underlying mapping.
  *
  *  Lin assertions errors will be triggered if the requested dimensions aren't
  *  possible given the reference's traits.
@@ -327,6 +337,9 @@ constexpr auto ref_row(internal::Mapping<D> &mapping, size_t i) {
  *  This serves essentially as a wrapper around the reference constructors
  *  using default dimensions.
  *
+ *  The anchor points specifies where the top left corner of the reference maps
+ *  to in the underlying stream.
+ *
  *  @ingroup REFERENCES
  */
 template <class C, class D, typename =
@@ -349,6 +362,9 @@ constexpr auto ref(internal::Stream<D> const &stream, size_t i, size_t j) {
  *
  *  This serves essentially as a wrapper around the vector reference
  *  constructors requesting a length.
+ *
+ *  The anchor points specifies where the top left corner of the reference maps
+ *  to in the underlying stream.
  *
  *  Lin assertions errors will be triggered if the requested dimensions aren't
  *  possible given the reference's traits.
@@ -380,6 +396,9 @@ constexpr auto ref(internal::Stream<D> const &stream, size_t i, size_t j, size_t
  *
  *  This serves essentially as a wrapper around the reference constructors
  *  using default dimensions.
+ *
+ *  The anchor points specifies where the top left corner of the reference maps
+ *  to in the underlying mapping.
  *
  *  Lin assertions errors will be triggered if the requested dimensions aren't
  *  possible given the reference's traits.
