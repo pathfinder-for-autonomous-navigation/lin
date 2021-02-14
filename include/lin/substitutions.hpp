@@ -182,7 +182,7 @@ constexpr size_t backward_sub(internal::Mapping<C> const &U, internal::Base<D> &
  *  @tparam E
  *
  *  @param L Lower triangular operator.
- *  @param X Unknow matrix or vector.
+ *  @param X Unknown matrix or vector.
  *  @param Y Known matrix or vector.
  *
  *  @return Zero on success and some other value otherwise.
