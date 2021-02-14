@@ -29,7 +29,7 @@
  *  @author Kyle Krol
  */
 
-/** @defgroup SUBSTITUTIONS
+/** @defgroup SUBSTITUTIONS Substitutions
  *
  *  @brief Supports solving linear system in conjunction with matrix
  *         factorizations.
@@ -163,9 +163,6 @@ constexpr size_t backward_sub(internal::Mapping<C> const &U, internal::Mapping<D
  *  in upper triangular form. The function itself does not check for this and
  *  simply assumes the elements below the main diagonal are all zero.
  *
- *  Lin assertion errors will be thrown if the dimensions of `X` are not the
- *  same as the dimensions of `Y`.
- *
  *  @sa internal::can_backward_sub
  *  @sa forward_sub
  *
@@ -193,10 +190,10 @@ constexpr size_t backward_sub(internal::Mapping<C> const &U, internal::Base<D> &
  *  Solves a linear system of the following form:
  *
  *  \f[
- *    U X = Y
+ *    L X = Y
  *  \f]
  * 
- *  where \f$U\f$ is a lower triangular operator, \f$X\f$ is an unknow matrix or
+ *  where \f$L\f$ is a lower triangular operator, \f$X\f$ is an unknow matrix or
  *  vector, and \f$Y\f$ is a known matrix or vector.
  *
  *  In order for the forward substitution to be valid, the matrix `L` must be in
@@ -253,7 +250,7 @@ constexpr size_t forward_sub(internal::Mapping<C> const &L, internal::Mapping<D>
  *    L X = Y
  *  \f]
  * 
- *  where \f$U\f$ is a lower triangular operator, \f$X\f$ is an unknow matrix or
+ *  where \f$L\f$ is a lower triangular operator, \f$X\f$ is an unknow matrix or
  *  vector, and \f$Y\f$ is a known matrix or vector.
  *
  *  In order for the forward substitution to be valid, the matrix `L` must be in
