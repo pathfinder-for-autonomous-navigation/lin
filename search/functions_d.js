@@ -1,0 +1,8 @@
+var searchData=
+[
+  ['vector',['Vector',['../classlin_1_1_vector.html#aac3005b862bc6c7c02baf5f2b2e2f624',1,'lin::Vector::Vector(size_t n)'],['../classlin_1_1_vector.html#a7d4c3209ad19309deded3a44a46d50a2',1,'lin::Vector::Vector(size_t n, std::initializer_list&lt; U &gt; const &amp;list)']]],
+  ['vectormappingreference',['VectorMappingReference',['../classlin_1_1internal_1_1_vector_mapping_reference.html#a291cf48ff3632e889d8638127e9e7cce',1,'lin::internal::VectorMappingReference']]],
+  ['vectorstreamreference',['VectorStreamReference',['../classlin_1_1internal_1_1_vector_stream_reference.html#aa177b3033677927eb9957b2133fec3bf',1,'lin::internal::VectorStreamReference']]],
+  ['vectorview',['VectorView',['../classlin_1_1internal_1_1_vector_view.html#aa88e5b34bf988281e2b2235eb7bbf15a',1,'lin::internal::VectorView']]],
+  ['view',['view',['../group___v_i_e_w_s.html#ga1c542f0911dd8b6ae67d32a0a5ffd061',1,'lin::view(typename C::Traits::elem_t *elems)'],['../group___v_i_e_w_s.html#ga5852d2ed59d2637b01fad2a7991297a3',1,'lin::view(typename C::Traits::elem_t *elems, size_t n)'],['../group___v_i_e_w_s.html#ga7cf9736ddf9af637a839f04a1da2c769',1,'lin::view(typename C::Traits::elem_t *elems, size_t r, size_t c)'],['../group___v_i_e_w_s.html#gacfb17cf66dc069d84d282fe874328fa1',1,'lin::view(typename C::Traits::elem_t const *elems)'],['../group___v_i_e_w_s.html#gae3abc6b0615d1e77a78bf7dec5a56f97',1,'lin::view(typename C::Traits::elem_t const *elems, size_t n)'],['../group___v_i_e_w_s.html#ga87cbfeb14b0bbfc391a7f4b2e630d9af',1,'lin::view(typename C::Traits::elem_t const *elems, size_t r, size_t c)']]]
+];
